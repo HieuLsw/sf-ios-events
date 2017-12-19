@@ -80,10 +80,13 @@ drop.get("/") { req in
   <!doctype html>
   <html>
   <head>
-  <title>sf-beverage</title>
-  <style type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>#sf-beverage</title>
+  <style>
   body {
-    margin: 3em 1em 1em 1em;
+    margin: 3em 1em 3em 1em;
   }
   p {
     font: 24px/36px "Avenir Next", Avenir, sans-serif;
@@ -95,8 +98,13 @@ drop.get("/") { req in
   }
   .footer {
     margin-top: 2em;
+  }
+  .footer p {
     font: 16px/20px "Avenir Next", Avenir, sans-serif;
     text-align: center;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 6px;
   }
   a, a:visited {
     color: #C04216;
@@ -129,9 +137,9 @@ drop.get("/") { req in
 
   output += """
   <div class="footer">
-  Inspired by <a target="_top" href="https://coffeecoffeecoffee.coffee">coffeecoffeecoffee.coffee</a> & <a target="_top" href="http://beerbeerbeerbeer.beer">beerbeerbeerbeer.beer</a><br>
-  Thanks to <a target="_top" href="https://twitter.com/jamescmartinez">@jamescmartinez</a>, <a target="_top" href="https://twitter.com/roderic">@roderic</a>, <a target="_top" href="https://twitter.com/brennansv">@brennansv</a>, and <a target="_top" href="https://twitter.com/schukin">@schukin</a><br>
-  By <a target="_top" href="https://twitter.com/gregheo">@gregheo</a>; powered by <a target="_top" href="https://www.heroku.com">Heroku</a> & <a target="_top" href="https://vapor.codes">Vapor</a> 💧
+  <p>💡 Inspired by <a target="_top" href="https://coffeecoffeecoffee.coffee">coffeecoffeecoffee.coffee</a> & <a target="_top" href="http://beerbeerbeerbeer.beer">beerbeerbeerbeer.beer</a></p>
+  <p>🙏 Thanks to <a target="_top" href="https://twitter.com/jamescmartinez">@jamescmartinez</a>, <a target="_top" href="https://twitter.com/roderic">@roderic</a>, <a target="_top" href="https://twitter.com/brennansv">@brennansv</a>, and <a target="_top" href="https://twitter.com/schukin">@schukin</a></p>
+  <p>👀 By <a target="_top" href="https://twitter.com/gregheo">@gregheo</a>; powered by <a target="_top" href="https://www.heroku.com">Heroku</a> & <a target="_top" href="https://vapor.codes">Vapor</a> 💧</p>
   </div>
   </body></html>
   """
