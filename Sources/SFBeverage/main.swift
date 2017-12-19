@@ -36,12 +36,6 @@ func calendar(url: URL) -> XCalendar.Calendar?
   return calendars.first
 }
 
-func reportErrorAndExit(message: String) -> Never
-{
-  print(message)
-  exit(-1)
-}
-
 func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String) -> [BeverageEvent]
 {
   guard let calendarEvents = calendarEvents else {
@@ -115,6 +109,10 @@ drop.get("/") { req in
 
   for event in events.sorted(by: { $0.date < $1.date}) {
     output += event.htmlString
+  }
+
+  if events.count == 0 {
+    output += "<p>Nothing on the schedule — or there’s a bug in the calendar fetcher.</p><p>Check again later! ☕️🍺🍵</p>"
   }
 
   output += "</body></html>"
