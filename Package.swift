@@ -5,7 +5,6 @@ import PackageDescription
 let package = Package(
     name: "sf-beverage",
     products: [
-        .library(name: "App", targets: ["App"]),
         .library(name: "XCalendar", targets: ["XCalendar"]),
         .executable(name: "SFBeverage", targets: ["SFBeverage"])
     ],
@@ -15,15 +14,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "XCalendar", dependencies: []),
-        .target(name: "App", dependencies: ["Vapor", "LeafProvider"],
-               exclude: [
-                   "Config",
-                   "Database",
-                   "Public",
-                   "Resources"
-               ]),
-        .target(name: "SFBeverage", dependencies: ["App", "Vapor", "LeafProvider", "XCalendar"]),
-        .testTarget(name: "AppTests", dependencies: ["App", "Testing"])
+        .target(name: "SFBeverage", dependencies: ["Vapor", "LeafProvider", "XCalendar"]),
     ]
 )
 
