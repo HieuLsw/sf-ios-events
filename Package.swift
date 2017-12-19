@@ -6,13 +6,15 @@ let package = Package(
     name: "sf-beverage",
     products: [
         .library(name: "App", targets: ["App"]),
-        .executable(name: "Run", targets: ["Run"])
+        .library(name: "XCalendar", targets: ["XCalendar"]),
+        .executable(name: "SFBeverage", targets: ["SFBeverage"])
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", .upToNextMajor(from: "2.2.0")),
         .package(url: "https://github.com/vapor/leaf-provider.git", .upToNextMajor(from: "1.1.0")),
     ],
     targets: [
+        .target(name: "XCalendar", dependencies: []),
         .target(name: "App", dependencies: ["Vapor", "LeafProvider"],
                exclude: [
                    "Config",
@@ -20,7 +22,7 @@ let package = Package(
                    "Public",
                    "Resources"
                ]),
-        .target(name: "Run", dependencies: ["App"]),
+        .target(name: "SFBeverage", dependencies: ["App", "Vapor", "LeafProvider", "XCalendar"]),
         .testTarget(name: "AppTests", dependencies: ["App", "Testing"])
     ]
 )
