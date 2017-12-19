@@ -54,7 +54,7 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
 
     let summary = event.summary ?? defaultTitle
 
-    var eventHtml = "<p>\(preamble)<br>"
+    var eventHtml = "<p>\(preamble)<br>\n"
     eventHtml += "\(summary): \(dateFormatter.string(from: startTime))"
 
     if let rawLocation = event.location {
@@ -64,7 +64,7 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
     } else {
       eventHtml += ".<br>Location TBD; please check Slack for more details!"
     }
-    eventHtml += "</p>"
+    eventHtml += "</p>\n"
 
     beverageEvents.append(BeverageEvent(date: startTime, htmlString: eventHtml))
   }
@@ -93,6 +93,18 @@ drop.get("/") { req in
     font: 32px/40px "SF Mono", Monaco, Menlo, Consolas, Courier;
     text-align: center;
   }
+  .footer {
+    margin-top: 2em;
+    font: 16px/20px "Avenir Next", Avenir, sans-serif;
+    text-align: center;
+  }
+  a, a:visited {
+    color: #C04216;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
   </style>
   </head>
   <body>
@@ -115,7 +127,14 @@ drop.get("/") { req in
     output += "<p>Nothing on the schedule — or there’s a bug in the calendar fetcher.</p><p>Check again later! ☕️🍺🍵</p>"
   }
 
-  output += "</body></html>"
+  output += """
+  <div class="footer">
+  Inspired by <a href="https://coffeecoffeecoffee.coffee">coffeecoffeecoffee.coffee</a> & <a href="http://beerbeerbeerbeer.beer">beerbeerbeerbeer.beer</a><br>
+  Thanks to <a href="https://twitter.com/jamescmartinez">@jamescmartinez</a>, <a href="https://twitter.com/roderic">@roderic</a>, <a href="https://twitter.com/brennansv">@brennansv</a>, and <a href="https://twitter.com/schukin">@schukin</a><br>
+  By <a href="https://twitter.com/gregheo">@gregheo</a>; powered by <a href="https://www.heroku.com">Heroku</a> & <a href="https://vapor.codes">Vapor</a> 💧
+  </div>
+  </body></html>
+  """
 
   return Response(
     status: .ok,
