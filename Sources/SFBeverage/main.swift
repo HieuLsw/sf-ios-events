@@ -60,7 +60,7 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
     if let rawLocation = event.location {
       let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
       let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
-      eventHtml += "<br>at <a href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
+      eventHtml += "<br>at <a target=\"_top\" href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
     } else {
       eventHtml += ".<br>Location TBD; please check Slack for more details!"
     }
@@ -129,9 +129,9 @@ drop.get("/") { req in
 
   output += """
   <div class="footer">
-  Inspired by <a href="https://coffeecoffeecoffee.coffee">coffeecoffeecoffee.coffee</a> & <a href="http://beerbeerbeerbeer.beer">beerbeerbeerbeer.beer</a><br>
-  Thanks to <a href="https://twitter.com/jamescmartinez">@jamescmartinez</a>, <a href="https://twitter.com/roderic">@roderic</a>, <a href="https://twitter.com/brennansv">@brennansv</a>, and <a href="https://twitter.com/schukin">@schukin</a><br>
-  By <a href="https://twitter.com/gregheo">@gregheo</a>; powered by <a href="https://www.heroku.com">Heroku</a> & <a href="https://vapor.codes">Vapor</a> 💧
+  Inspired by <a target="_top" href="https://coffeecoffeecoffee.coffee">coffeecoffeecoffee.coffee</a> & <a target="_top" href="http://beerbeerbeerbeer.beer">beerbeerbeerbeer.beer</a><br>
+  Thanks to <a target="_top" href="https://twitter.com/jamescmartinez">@jamescmartinez</a>, <a target="_top" href="https://twitter.com/roderic">@roderic</a>, <a target="_top" href="https://twitter.com/brennansv">@brennansv</a>, and <a target="_top" href="https://twitter.com/schukin">@schukin</a><br>
+  By <a target="_top" href="https://twitter.com/gregheo">@gregheo</a>; powered by <a target="_top" href="https://www.heroku.com">Heroku</a> & <a target="_top" href="https://vapor.codes">Vapor</a> 💧
   </div>
   </body></html>
   """
