@@ -65,7 +65,8 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
 
     if let rawLocation = event.location {
       let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
-      eventHtml += "<br>at <a href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(location)</a>"
+      let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
+      eventHtml += "<br>at <a href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
     } else {
       eventHtml += ".<br>Location TBD; please check Slack for more details!"
     }
@@ -88,16 +89,20 @@ drop.get("/") { req in
   <title>sf-beverage</title>
   <style type="text/css">
   body {
-    margin-top: 3em;
+    margin: 3em 1em 1em 1em;
   }
   p {
-    margin: 2em;
     font: 24px/36px "Avenir Next", Avenir, sans-serif;
+    text-align: center;
+  }
+  h1 {
+    font: 32px/40px "SF Mono", Monaco, Menlo, Consolas, Courier;
     text-align: center;
   }
   </style>
   </head>
   <body>
+  <h1>#sf-beverage</h1>
   """
 
   let beerCalendar = calendar(url: URL(string: "https://calendar.google.com/calendar/ical/phk026m02ec2htc3s4kqqtdgt4%40group.calendar.google.com/public/basic.ics")!)
