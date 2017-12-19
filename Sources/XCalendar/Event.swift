@@ -68,7 +68,13 @@ extension Event: IcsElement {
         case "DTSTAMP":
             dtstamp = value.toDate()
         case "DTSTART":
-            dtstart = value.toDate()
+            if let timeZone = otherAttrs["DTTIMEZONE"] {
+                let df = iCal.dateFormatterNonZulu
+                df.timeZone = TimeZone(identifier: timeZone)
+                dtstart = df.date(from: value)
+            } else {
+                dtstart = value.toDate()
+            }
         case "DTEND":
             dtend = value.toDate()
         // case "ORGANIZER":
@@ -78,7 +84,7 @@ extension Event: IcsElement {
         case "DESCRIPTION":
             descr = value
         case "LOCATION":
-          location = value.replacingOccurrences(of: "\\,", with: ",")
+            location = value.replacingOccurrences(of: "\\,", with: ",")
         default:
             otherAttrs[attr] = value
         }

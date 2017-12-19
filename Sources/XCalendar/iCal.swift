@@ -34,6 +34,12 @@ public enum iCal {
         }
     }
 
+    static let dateFormatterNonZulu: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss"
+        return dateFormatter
+    }()
+
     static let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"

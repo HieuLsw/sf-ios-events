@@ -71,8 +71,16 @@ internal class Parser {
             }
 
             if inEvent && !inAlarm {
-                currentEvent?.addAttribute(attr: key, value)
-                lastAttribute = key
+                // HACK
+                if key.hasPrefix("DTSTART;TZID=") {
+                    let timeZone = key.dropFirst("DTSTART;TZID=".count)
+                    currentEvent?.addAttribute(attr: "DTTIMEZONE", String(timeZone))
+                    currentEvent?.addAttribute(attr: "DTSTART", value)
+                    lastAttribute = "DTSTART"
+                } else {
+                    currentEvent?.addAttribute(attr: key, value)
+                    lastAttribute = key
+                }
             }
 
             if inAlarm {
