@@ -25,15 +25,9 @@ var dateFormatter: DateFormatter = {
 
 func calendar(url: URL) -> XCalendar.Calendar?
 {
-  let calendars: [XCalendar.Calendar]
+  let calendars: [XCalendar.Calendar]? = try? iCal.load(url: url)
 
-  do {
-    calendars = try iCal.load(url: url)
-  } catch {
-    return nil
-  }
-
-  return calendars.first
+  return calendars?.first
 }
 
 func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String) -> [BeverageEvent]
