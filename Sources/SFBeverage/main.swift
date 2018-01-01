@@ -114,7 +114,7 @@ drop.get("/") { req in
   """
 
   let beerCalendar = calendar(url: URL(string: "https://calendar.google.com/calendar/ical/phk026m02ec2htc3s4kqqtdgt4%40group.calendar.google.com/public/basic.ics")!)
-  let coffeeCalendar = calendar(url: URL(string: "https://calendar.google.com/calendar/ical/ho60q57pauegr2ki4v9hhspvdo%40group.calendar.google.com/public/basic.ics")!)
+  let coffeeCalendar = calendar(url: URL(string: "http://coffeecoffeecoffee.coffee/groups/28ef50f9-b909-4f03-9a69-a8218a8cbd99/ical")!)
 
   var events: [BeverageEvent] = []
 
