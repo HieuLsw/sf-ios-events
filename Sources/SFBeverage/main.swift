@@ -36,11 +36,13 @@ func calendar(url: URL) -> XCalendar.Calendar?
 /// Generates an HTML string from a single event.
 func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> String
 {
-  var eventHtml = "<p>\(preamble)<br>\n\(summary)"
-
+  var eventHtml = "<p>\(preamble)\n"
+  
   if let startDate = event.dtstart {
-    eventHtml += ": \(dateFormatter.string(from: startDate))"
+    eventHtml += "<br>\(dateFormatter.string(from: startDate))\n"
   }
+  
+  eventHtml += "<br>\(summary)\n"
 
   if let rawLocation = event.location {
     let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
