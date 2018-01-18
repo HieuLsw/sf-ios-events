@@ -45,7 +45,15 @@ func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> Str
   if let rawLocation = event.location {
     let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
     let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
-    eventHtml += "<br>at <a target=\"_top\" href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
+    let mapUrl = "https://www.google.com/maps?hl=en&q=\(location)"
+
+    if let linkUrl = event.otherAttrs["URL"] {
+      // Event has its own URL! Show it + the Google Maps link.
+      eventHtml += "<br>at <a target=\"_top\" href=\"\(linkUrl)\">\(displayLocation)</a> (<a target=\"_top\" href=\"\(mapUrl)\">map</a>)"
+    } else {
+      // No event URL; just use the Google Maps one.
+      eventHtml += "<br>at <a target=\"_top\" href=\"\(mapUrl)\">\(displayLocation)</a>"
+    }
   } else {
     eventHtml += ".<br>Location TBD; please check Slack for more details!"
   }
