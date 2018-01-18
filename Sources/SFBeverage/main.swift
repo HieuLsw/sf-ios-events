@@ -142,7 +142,7 @@ drop.get("/") { req in
 
   var events: [BeverageEvent] = []
 
-  events += upcomingBeverageEvents(calendarEvents: beerCalendar?.subComponents, preamble: "🍺🍸🍹", defaultTitle: "Weekly #sf-beer")
+  events += upcomingBeverageEvents(calendarEvents: beerCalendar?.subComponents, preamble: "🍺🍸🍴", defaultTitle: "Weekly #sf-beer")
   events += upcomingBeverageEvents(calendarEvents: coffeeCalendar?.subComponents, preamble: "☕️🍵🥐", defaultTitle: "iOS Coffee")
 
   for event in events.sorted(by: { $0.date < $1.date}).prefix(5) {
