@@ -10,11 +10,13 @@ import Foundation
 import XCalendar
 import Vapor
 
+/// Simple struct for a single event.
 struct BeverageEvent {
   let date: Date
   let htmlString: String
 }
 
+/// Re-used date formatter.
 var dateFormatter: DateFormatter = {
   let dateFormatter = DateFormatter()
   dateFormatter.timeZone = TimeZone(identifier: "America/Los_Angeles")
@@ -23,6 +25,7 @@ var dateFormatter: DateFormatter = {
   return dateFormatter
 }()
 
+/// Creates a `Calendar` object from an iCal URL.
 func calendar(url: URL) -> XCalendar.Calendar?
 {
   let calendars: [XCalendar.Calendar]? = try? iCal.load(url: url)
@@ -30,6 +33,7 @@ func calendar(url: URL) -> XCalendar.Calendar?
   return calendars?.first
 }
 
+/// Generates an HTML string from a single event.
 func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> String
 {
   var eventHtml = "<p>\(preamble)<br>\n\(summary)"
@@ -50,6 +54,7 @@ func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> Str
   return eventHtml
 }
 
+/// Given a calendar, returns an array of upcoming `BeverageEvent` instances.
 func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String) -> [BeverageEvent]
 {
   guard let calendarEvents = calendarEvents else {
