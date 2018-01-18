@@ -30,6 +30,26 @@ func calendar(url: URL) -> XCalendar.Calendar?
   return calendars?.first
 }
 
+func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> String
+{
+  var eventHtml = "<p>\(preamble)<br>\n\(summary)"
+
+  if let startDate = event.dtstart {
+    eventHtml += ": \(dateFormatter.string(from: startDate))"
+  }
+
+  if let rawLocation = event.location {
+    let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
+    let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
+    eventHtml += "<br>at <a target=\"_top\" href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
+  } else {
+    eventHtml += ".<br>Location TBD; please check Slack for more details!"
+  }
+  eventHtml += "</p>\n"
+
+  return eventHtml
+}
+
 func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String) -> [BeverageEvent]
 {
   guard let calendarEvents = calendarEvents else {
@@ -47,20 +67,9 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
     }
 
     let summary = event.summary ?? defaultTitle
-
-    var eventHtml = "<p>\(preamble)<br>\n"
-    eventHtml += "\(summary): \(dateFormatter.string(from: startTime))"
-
-    if let rawLocation = event.location {
-      let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
-      let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
-      eventHtml += "<br>at <a target=\"_top\" href=\"https://www.google.com/maps?hl=en&q=\(location)\">\(displayLocation)</a>"
-    } else {
-      eventHtml += ".<br>Location TBD; please check Slack for more details!"
-    }
-    eventHtml += "</p>\n"
-
-    beverageEvents.append(BeverageEvent(date: startTime, htmlString: eventHtml))
+    let html = eventHtml(event: event, preamble: preamble, summary: summary)
+    
+    beverageEvents.append(BeverageEvent(date: startTime, htmlString: html))
   }
 
   return beverageEvents
