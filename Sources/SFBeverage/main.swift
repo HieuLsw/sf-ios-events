@@ -10,6 +10,20 @@ import Foundation
 import XCalendar
 import Vapor
 
+/// Simple struct for a calendar of events.
+struct EventCalendar {
+  /// The iCal URL
+  let url: String
+  /// Emoji preamble to identify these events
+  let preamble: String
+  /// Default title for unnamed events
+  let defaultTitle: String
+  /// Maximum number of these events to display. Set to 0 for no limit.
+  let eventLimit: Int
+  /// Whether to show the location or not
+  let showLocation: Bool
+}
+
 /// Simple struct for a single event.
 struct BeverageEvent {
   let date: Date
@@ -26,7 +40,7 @@ var dateFormatter: DateFormatter = {
 }()
 
 /// Creates a `Calendar` object from an iCal URL.
-func calendar(url: URL) -> XCalendar.Calendar?
+func loadCalendar(url: URL) -> XCalendar.Calendar?
 {
   let calendars: [XCalendar.Calendar]? = try? iCal.load(url: url)
 
@@ -34,17 +48,21 @@ func calendar(url: URL) -> XCalendar.Calendar?
 }
 
 /// Generates an HTML string from a single event.
-func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> String
+func eventHtml(event: XCalendar.Event, eventCalendar: EventCalendar, summary: String) -> String
 {
-  var eventHtml = "<p>\(preamble)\n"
+  var eventHtml = "<p>\(eventCalendar.preamble)\n"
   
   if let startDate = event.dtstart {
     eventHtml += "<br>\(dateFormatter.string(from: startDate))\n"
   }
   
-  eventHtml += "<br>\(summary)\n"
+  if !eventCalendar.showLocation, let linkUrl = event.otherAttrs["URL"] {
+    eventHtml += "<br><a target=\"_top\" href=\"\(linkUrl)\">\(summary)</a>\n"
+  } else {
+    eventHtml += "<br>\(summary)\n"
+  }
 
-  if let rawLocation = event.location {
+  if eventCalendar.showLocation, let rawLocation = event.location {
     let location = rawLocation.replacingOccurrences(of: "\\n", with: "\n")
     let displayLocation = location.replacingOccurrences(of: ", United States", with: "")
     let mapUrl = "https://www.google.com/maps?hl=en&q=\(location)"
@@ -56,8 +74,6 @@ func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> Str
       // No event URL; just use the Google Maps one.
       eventHtml += "<br>at <a target=\"_top\" href=\"\(mapUrl)\">\(displayLocation)</a>"
     }
-  } else {
-    eventHtml += ".<br>Location TBD; please check Slack for more details!"
   }
   eventHtml += "</p>\n"
 
@@ -65,7 +81,7 @@ func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> Str
 }
 
 /// Given a calendar, returns an array of upcoming `BeverageEvent` instances.
-func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String, limit: Int = Int.max) -> [BeverageEvent]
+func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, eventCalendar: EventCalendar) -> [BeverageEvent]
 {
   guard let calendarEvents = calendarEvents else {
     return []
@@ -83,13 +99,13 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
       continue
     }
 
-    let summary = event.summary ?? defaultTitle
-    let html = eventHtml(event: event, preamble: preamble, summary: summary)
+    let summary = event.summary ?? eventCalendar.defaultTitle
+    let html = eventHtml(event: event, eventCalendar: eventCalendar, summary: summary)
     
     beverageEvents.append(BeverageEvent(date: startTime, htmlString: html))
 
     addedEventCount += 1
-    if addedEventCount == limit {
+    if addedEventCount == eventCalendar.eventLimit {
       break
     }
   }
@@ -144,13 +160,45 @@ drop.get("/") { req in
   <h1>#sf-beverage</h1>
   """
 
-  let beerCalendar = calendar(url: URL(string: "https://calendar.google.com/calendar/ical/phk026m02ec2htc3s4kqqtdgt4%40group.calendar.google.com/public/basic.ics")!)
-  let coffeeCalendar = calendar(url: URL(string: "http://coffeecoffeecoffee.coffee/groups/28ef50f9-b909-4f03-9a69-a8218a8cbd99/ical")!)
+  let eventCalendars: [EventCalendar] = [
+    EventCalendar(url: "https://calendar.google.com/calendar/ical/phk026m02ec2htc3s4kqqtdgt4%40group.calendar.google.com/public/basic.ics",
+                  preamble: "🍺🍸🍴",
+                  defaultTitle: "Weekly #sf-beer",
+                  eventLimit: 0,
+                  showLocation: true),
+    EventCalendar(url: "http://coffeecoffeecoffee.coffee/groups/28ef50f9-b909-4f03-9a69-a8218a8cbd99/ical",
+                  preamble: "☕️🍵🥐",
+                  defaultTitle: "iOS Coffee",
+                  eventLimit: 0,
+                  showLocation: true),
+    EventCalendar(url: "https://www.meetup.com/iOS-peer-lab/events/ical/",
+                  preamble: "💻🤓🤝",
+                  defaultTitle: "iOS Peer Lab",
+                  eventLimit: 1,
+                  showLocation: false),
+    EventCalendar(url: "https://www.meetup.com/nsmeetup/events/ical/",
+                  preamble: "👩‍💻👨‍💻📣",
+                  defaultTitle: "NSMeetup",
+                  eventLimit: 1,
+                  showLocation: false),
+    EventCalendar(url: "https://www.meetup.com/swift-language/events/ical/",
+                  preamble: "👩‍💻👨‍💻📣",
+                  defaultTitle: "SLUG",
+                  eventLimit: 1,
+                  showLocation: false),
+  ]
 
   var events: [BeverageEvent] = []
 
-  events += upcomingBeverageEvents(calendarEvents: beerCalendar?.subComponents, preamble: "🍺🍸🍴", defaultTitle: "Weekly #sf-beer")
-  events += upcomingBeverageEvents(calendarEvents: coffeeCalendar?.subComponents, preamble: "☕️🍵🥐", defaultTitle: "iOS Coffee")
+  for eventCalendar in eventCalendars {
+    guard let url = URL(string: eventCalendar.url) else {
+      continue
+    }
+
+    let calendar = loadCalendar(url: url)
+    events += upcomingBeverageEvents(calendarEvents: calendar?.subComponents,
+                                     eventCalendar: eventCalendar)
+  }
 
   for event in events.sorted(by: { $0.date < $1.date}).prefix(5) {
     output += event.htmlString
