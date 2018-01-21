@@ -65,13 +65,15 @@ func eventHtml(event: XCalendar.Event, preamble: String, summary: String) -> Str
 }
 
 /// Given a calendar, returns an array of upcoming `BeverageEvent` instances.
-func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String) -> [BeverageEvent]
+func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, preamble: String, defaultTitle: String, limit: Int = Int.max) -> [BeverageEvent]
 {
   guard let calendarEvents = calendarEvents else {
     return []
   }
 
   var beverageEvents: [BeverageEvent] = []
+
+  var addedEventCount: Int = 0
 
   for sub in calendarEvents {
     guard let event = sub as? XCalendar.Event,
@@ -85,6 +87,11 @@ func upcomingBeverageEvents(calendarEvents: [XCalendar.CalendarComponent]?, prea
     let html = eventHtml(event: event, preamble: preamble, summary: summary)
     
     beverageEvents.append(BeverageEvent(date: startTime, htmlString: html))
+
+    addedEventCount += 1
+    if addedEventCount == limit {
+      break
+    }
   }
 
   return beverageEvents
