@@ -124,7 +124,7 @@ drop.get("/") { req in
   <meta charset="utf-8">
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>#sf-beverage</title>
+  <title>#sf-ios-events</title>
   <style>
   body {
     margin: 3em 1em 3em 1em;
@@ -157,7 +157,7 @@ drop.get("/") { req in
   </style>
   </head>
   <body>
-  <h1>#sf-beverage</h1>
+  <h1>#sf-ios-events</h1>
   """
 
   let eventCalendars: [EventCalendar] = [
