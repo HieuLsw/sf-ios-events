@@ -50,16 +50,16 @@ func loadCalendar(url: URL) -> XCalendar.Calendar?
 /// Generates an HTML string from a single event.
 func eventHtml(event: XCalendar.Event, eventCalendar: EventCalendar, summary: String) -> String
 {
-  var eventHtml = "<p>\(eventCalendar.preamble)\n"
+  var eventHtml = "<p>\(eventCalendar.preamble.htmlEscaped)\n"
   
   if let startDate = event.dtstart {
     eventHtml += "<br>\(dateFormatter.string(from: startDate))\n"
   }
   
   if !eventCalendar.showLocation, let linkUrl = event.otherAttrs["URL"] {
-    eventHtml += "<br><a target=\"_top\" href=\"\(linkUrl)\">\(summary)</a>\n"
+    eventHtml += "<br><a target=\"_top\" href=\"\(linkUrl)\">\(summary.htmlEscaped)</a>\n"
   } else {
-    eventHtml += "<br>\(summary)\n"
+    eventHtml += "<br>\(summary.htmlEscaped)\n"
   }
 
   if eventCalendar.showLocation, let rawLocation = event.location {
@@ -69,10 +69,10 @@ func eventHtml(event: XCalendar.Event, eventCalendar: EventCalendar, summary: St
 
     if let linkUrl = event.otherAttrs["URL"] {
       // Event has its own URL! Show it + the Google Maps link.
-      eventHtml += "<br>at <a target=\"_top\" href=\"\(linkUrl)\">\(displayLocation)</a> (<a target=\"_top\" href=\"\(mapUrl)\">map</a>)"
+      eventHtml += "<br>at <a target=\"_top\" href=\"\(linkUrl)\">\(displayLocation.htmlEscaped)</a> (<a target=\"_top\" href=\"\(mapUrl)\">map</a>)"
     } else {
       // No event URL; just use the Google Maps one.
-      eventHtml += "<br>at <a target=\"_top\" href=\"\(mapUrl)\">\(displayLocation)</a>"
+      eventHtml += "<br>at <a target=\"_top\" href=\"\(mapUrl)\">\(displayLocation.htmlEscaped)</a>"
     }
   }
   eventHtml += "</p>\n"
