@@ -1,4 +1,4 @@
-# sf-beverage on the web
+# sf-ios-events on the web
 
 Accessible at friendly domain [sf-ios.space](http://sf-ios.space) (aka [sf-beverage.wtf](http://sf-beverage.wtf)) and directly on Heroku at [sf-beverage.herokuapp.com](https://sf-beverage.herokuapp.com). Powered by [Vapor](https://vapor.codes). And coffee.
 
